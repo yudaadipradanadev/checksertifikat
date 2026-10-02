@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verifikasi & Cek Sertifikat</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    .container {
+      text-align: center;
+      padding: 2rem;
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #1a73e8;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="spinner"></div>
+    <h2>Mengarahkan ke Sistem Cek Sertifikat...</h2>
+    <p>Mohon tunggu sebentar, Anda sedang dialihkan.</p>
+  </div>
+
+  <script>
+    // URL Target Redirect Cek Sertifikat
+    const targetURL = "https://script.google.com/macros/s/AKfycbxRmZ5163dQfhcYsuc1T6qX-HeMZqKMor-bL9FtT3tMyMkdxi9pDbcf2idy2yn7sRdu/exec";
+
+    // Eksekusi Redirect
+    window.location.href = targetURL;
+
+    // Registrasi Service Worker untuk PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => console.log('Service Worker Cek Sertifikat terdaftar'))
+          .catch(err => console.error('Gagal mendaftarkan Service Worker', err));
+      });
+    }
+  </script>
+</body>
+</html>
