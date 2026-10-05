@@ -51,28 +51,21 @@
 </head>
 <body>
 
-  <!-- Loading Spinner Overlay -->
   <div id="loader-container">
     <div class="spinner"></div>
   </div>
 
   <script>
-    const webAppURLs = [
+    const fallbackURLs = [
       "https://script.google.com/macros/s/AKfycbwB3QwbBXXQk-L3_rZmfTx4xyrwLlrTbDqmM5RPecShxpk1JOt5VI-UpdNfnz9FN_QF/exec",
       "https://script.google.com/macros/s/AKfycbzxruqB4jXjwZlHF-gH989DgEfmwoBJD7GCbyJlHPiCOCTT1CvCLO51HR55SbI9Lr2i/exec",
       "https://script.google.com/macros/s/AKfycbyqURVj5DUu3HPhJZwXAmHrD7DfEgWnicg4QEY7X4r3WU4EuMVPZ5CpxV66CTlpGy-t/exec"
     ];
 
-    try {
-
-      const randomIndex = Math.floor(Math.random() * webAppURLs.length);
-      const targetURL = webAppURLs[randomIndex];
-
-
+    function loadIframe(url) {
       const iframe = document.createElement('iframe');
-      iframe.src = targetURL;
+      iframe.src = url;
       iframe.allow = "geolocation; microphone; camera";
-
 
       iframe.onload = function() {
         const loader = document.getElementById('loader-container');
@@ -80,11 +73,25 @@
       };
 
       document.body.appendChild(iframe);
-    } catch (err) {
-      console.error("Error:", err);
-      document.getElementById('loader-container').innerHTML = 
-        '<p style="color: red; font-weight: bold; text-align: center;">Gagal memuat sertifikat. Silakan muat ulang halaman.</p>';
     }
+
+    fetch('/api/redirect')
+      .then(res => {
+        if (!res.ok) throw new Error("Bukan lingkungan Vercel API");
+        return res.json();
+      })
+      .then(data => {
+        if (data && data.url) {
+          loadIframe(data.url);
+        } else {
+          throw new Error("URL tidak ditemukan");
+        }
+      })
+      .catch(err => {
+        console.warn("Menggunakan fallback rotasi lokal:", err.message);
+        const randomIndex = Math.floor(Math.random() * fallbackURLs.length);
+        loadIframe(fallbackURLs[randomIndex]);
+      });
   </script>
 
 </body>
