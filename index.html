@@ -36,19 +36,30 @@
   </div>
   <iframe id="childFrame" style="display:none;"></iframe>
 
-  <script>
-    google.script.run
-      .withSuccessHandler(function(targetUrl) {
+<script>
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbxRmZ5163dQfhcYsuc1T6qX-HeMZqKMor-bL9FtT3tMyMkdxi9pDbcf2idy2yn7sRdu/exec";
+
+  fetch(GAS_URL)
+    .then(res => res.json())
+    .then(data => {
+      if (data.url) {
         var iframe = document.getElementById('childFrame');
         var loader = document.getElementById('loader');
-        
-        iframe.src = targetUrl;
-        iframe.onload = function() {
-          loader.style.display = 'none';
-          iframe.style.display = 'block';
-        };
-      })
-      .routeToWebAppWithUA();
-  </script>
+
+        if (iframe) {
+
+          iframe.src = data.url;
+          iframe.onload = function() {
+            if (loader) loader.style.display = 'none';
+            iframe.style.display = 'block';
+          };
+        } else {
+
+          window.location.href = data.url;
+        }
+      }
+    })
+    .catch(err => console.error("Error fetching URL:", err));
+</script>
 </body>
 </html>
