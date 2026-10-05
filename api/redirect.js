@@ -1,4 +1,5 @@
 export default async function handler(req, res) {
+  // Matikan caching agar rotasi URL selalu diperbarui setiap saat
   res.setHeader('Cache-Control', 'no-store, max-age=0');
 
   const mainUrl = process.env.GAS_URLS;
@@ -8,6 +9,7 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Vercel Server memanggil Apps Script di balik layar
     const response = await fetch(mainUrl, {
       method: 'GET',
       redirect: 'follow'
@@ -20,6 +22,7 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     if (data && data.url) {
+      // 302 REDIRECT LANGSUNG DARI SERVER (Penghilang Layar Peringatan Google)
       return res.redirect(302, data.url);
     } else {
       return res.status(500).send("Format JSON dari Apps Script tidak sesuai.");
