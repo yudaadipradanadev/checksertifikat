@@ -1,19 +1,18 @@
 export default async function handler(req, res) {
-  // Set Header CORS & Anti-Cache
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Cache-Control', 'no-store, max-age=0');
 
+  // Membaca variabel GAS_URLS dari Vercel
   const mainUrl = process.env.GAS_URLS;
 
   if (!mainUrl) {
-    return res.status(500).json({ error: "Terjadi Kesalah Server" });
+    return res.status(500).json({ error: "GAS_URLS belum diisi di Vercel Settings" });
   }
 
   try {
-    // Memanggil Google Apps Script di sisi server
     const response = await fetch(mainUrl, {
       method: 'GET',
-      redirect: 'follow' // Mengikuti redirect Google Apps Script secara otomatis
+      redirect: 'follow'
     });
 
     if (!response.ok) {
@@ -25,10 +24,10 @@ export default async function handler(req, res) {
     if (data && data.url) {
       return res.status(200).json({ url: data.url });
     } else {
-      return res.status(500).json({ error: "Format JSON tidak memiliki properti 'url'" });
+      return res.status(500).json({ error: "Format JSON Apps Script tidak sesuai" });
     }
   } catch (error) {
-    console.error("Gagal memanggil GAS via Vercel:", error);
+    console.error("Gagal memanggil Apps Script:", error);
     return res.status(500).json({ error: error.message || "Gagal mengambil data dari Apps Script" });
   }
 }
