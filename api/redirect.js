@@ -9,11 +9,9 @@ export default function handler(req, res) {
     return res.status(500).send("GAS_URLS belum diisi di Vercel Settings.");
   }
 
-  // Pilih 1 URL secara acak di Vercel Server (< 5 ms)
   const randomIndex = Math.floor(Math.random() * webAppURLs.length);
   const targetURL = webAppURLs[randomIndex];
 
-  // Render Iframe Fullscreen yang membungkus Web App Google
   const htmlContent = `
     <!DOCTYPE html>
     <html lang="id">
