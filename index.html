@@ -5,20 +5,15 @@
   <title>Cek Sertifikat</title>
   <style>
     body, html {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      margin: 0; padding: 0;
+      width: 100%; height: 100%;
+      display: flex; justify-content: center; align-items: center;
       background-color: #ffffff;
       font-family: sans-serif;
     }
 
     .spinner {
-      width: 45px;
-      height: 45px;
+      width: 45px; height: 45px;
       border: 4px solid #f3f3f3;
       border-top: 4px solid #007bff;
       border-radius: 50%;
@@ -33,35 +28,11 @@
 </head>
 <body>
 
-  <div id="loader" class="spinner"></div>
+  <div class="spinner"></div>
 
   <script>
-    fetch('/api/redirect')
-      .then(async res => {
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.error || "Gagal dari server Vercel");
-        }
-        return data;
-      })
-      .then(data => {
-        if (data && data.url) {
-          // Langsung alihkan pengguna ke URL target
-          window.location.replace(data.url);
-        } else {
-          throw new Error("URL target tidak ditemukan");
-        }
-      })
-      .catch(err => {
-        console.error("Detail Error:", err);
-        document.getElementById('loader').style.display = 'none';
-        document.body.innerHTML = `
-          <div style="text-align: center; padding: 20px;">
-            <p style="color: red; font-weight: bold;">Gagal memuat sertifikat.</p>
-            <p style="color: #666; font-size: 13px;">Detail: ${err.message}</p>
-          </div>
-        `;
-      });
+    // Langsung arahkan browser ke Server-Side Redirect Vercel
+    window.location.replace("/api/redirect");
   </script>
 
 </body>
