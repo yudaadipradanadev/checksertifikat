@@ -9,24 +9,14 @@
       padding: 0;
       width: 100%;
       height: 100%;
-      overflow: hidden;
-      background-color: #f8f9fa;
-    }
-
-    #loader-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
       background-color: #ffffff;
-      z-index: 9999;
+      font-family: sans-serif;
     }
 
-    /* Animasi CSS Spinner */
+    /* CSS Spinner */
     .spinner {
       width: 50px;
       height: 50px;
@@ -40,48 +30,32 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-
-    iframe {
-      width: 100%;
-      height: 100vh;
-      border: none;
-      display: none; 
-    }
   </style>
 </head>
 <body>
 
+  <!-- Spinner Loading -->
   <div id="loader-container">
     <div class="spinner"></div>
   </div>
 
-  <iframe id="childFrame"></iframe>
-
   <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbxRmZ5163dQfhcYsuc1T6qX-HeMZqKMor-bL9FtT3tMyMkdxi9pDbcf2idy2yn7sRdu/exec";[cite: 1]
-
-    const loader = document.getElementById('loader-container');
-    const iframe = document.getElementById('childFrame');
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxRmZ5163dQfhcYsuc1T6qX-HeMZqKMor-bL9FtT3tMyMkdxi9pDbcf2idy2yn7sRdu/exec";
 
     fetch(GAS_URL)
       .then(response => response.json())
       .then(data => {
         if (data && data.url) {
-          if (iframe) {
-            iframe.src = data.url;
-
-            iframe.onload = function() {
-              loader.style.display = 'none';
-              iframe.style.display = 'block';
-            };
-          } else {
-            window.location.href = data.url;
-          }
+          // Langsung alihkan seluruh halaman ke URL target
+          window.location.href = data.url;
+        } else {
+          throw new Error("URL tidak ditemukan pada respons.");
         }
       })
       .catch(error => {
         console.error("Gagal memuat URL:", error);
-        loader.innerHTML = '<p style="font-family: sans-serif; color: #dc3545;">Gagal memuat halaman. Silakan muat ulang.</p>';
+        document.getElementById('loader-container').innerHTML = 
+          '<p style="color: #dc3545;">Gagal memuat halaman. Silakan muat ulang.</p>';
       });
   </script>
 
