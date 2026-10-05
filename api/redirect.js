@@ -9,12 +9,11 @@ export default async function handler(req, res) {
   }
 
   try {
-
+    // Ambil JSON { url: "..." } dari router gas
     const response = await fetch(gasRouterUrl);
     const data = await response.json();
 
     if (data && data.url) {
-
       return res.status(200).json({ url: data.url });
     } else {
       throw new Error("Respon GAS tidak valid");
