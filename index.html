@@ -43,7 +43,7 @@
         var iframe = document.getElementById('childFrame');
         var loader = document.getElementById('loader');
         
-        // Memuat URL child di dalam iframe, bukan redirect
+        // Memuat child app di dalam iframe agar banner tersembunyi
         iframe.src = targetUrl;
         iframe.onload = function() {
           loader.style.display = 'none';
