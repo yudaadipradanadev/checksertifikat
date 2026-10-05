@@ -38,9 +38,8 @@
 
 <script>
   const GAS_URL = "https://script.google.com/macros/s/AKfycbxRmZ5163dQfhcYsuc1T6qX-HeMZqKMor-bL9FtT3tMyMkdxi9pDbcf2idy2yn7sRdu/exec";
-
   fetch(GAS_URL)
-    .then(res => res.json())
+    .then(response => response.json())
     .then(data => {
       if (data.url) {
         var iframe = document.getElementById('childFrame');
@@ -59,7 +58,7 @@
         }
       }
     })
-    .catch(err => console.error("Error fetching URL:", err));
+    .catch(error => console.error("Error fetching URL:", error));
 </script>
 </body>
 </html>
