@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
   <meta charset="UTF-8">
   <title>Cek Sertifikat</title>
@@ -10,33 +10,79 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
+      background-color: #f8f9fa;
     }
+
+    #loader-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #ffffff;
+      z-index: 9999;
+    }
+
+    /* Animasi CSS Spinner */
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #e0e0e0;
+      border-top: 5px solid #007bff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
     iframe {
       width: 100%;
       height: 100vh;
       border: none;
+      display: none; 
     }
   </style>
 </head>
 <body>
+
+  <div id="loader-container">
+    <div class="spinner"></div>
+  </div>
+
   <iframe id="childFrame"></iframe>
 
   <script>
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbxRmZ5163dQfhcYsuc1T6qX-HeMZqKMor-bL9FtT3tMyMkdxi9pDbcf2idy2yn7sRdu/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxRmZ5163dQfhcYsuc1T6qX-HeMZqKMor-bL9FtT3tMyMkdxi9pDbcf2idy2yn7sRdu/exec";[cite: 1]
+
+    const loader = document.getElementById('loader-container');
+    const iframe = document.getElementById('childFrame');
 
     fetch(GAS_URL)
       .then(response => response.json())
       .then(data => {
         if (data && data.url) {
-          const iframe = document.getElementById('childFrame');
           if (iframe) {
             iframe.src = data.url;
+
+            iframe.onload = function() {
+              loader.style.display = 'none';
+              iframe.style.display = 'block';
+            };
           } else {
             window.location.href = data.url;
           }
         }
       })
-      .catch(error => console.error("Gagal memuat URL:", error));
+      .catch(error => {
+        console.error("Gagal memuat URL:", error);
+        loader.innerHTML = '<p style="font-family: sans-serif; color: #dc3545;">Gagal memuat halaman. Silakan muat ulang.</p>';
+      });
   </script>
 
 </body>
