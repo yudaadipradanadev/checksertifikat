@@ -38,12 +38,12 @@
   <iframe id="childFrame" style="display:none;"></iframe>
 
   <script>
-    // Ambil URL target secara Round-Robin dari backend code.gs
     google.script.run
       .withSuccessHandler(function(targetUrl) {
         var iframe = document.getElementById('childFrame');
         var loader = document.getElementById('loader');
         
+        // Memuat URL child di dalam iframe, bukan redirect
         iframe.src = targetUrl;
         iframe.onload = function() {
           loader.style.display = 'none';
