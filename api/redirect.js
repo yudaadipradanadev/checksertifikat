@@ -1,34 +1,18 @@
-export default async function handler(req, res) {
-  // Matikan caching agar rotasi URL selalu diperbarui setiap saat
+export default function handler(req, res) {
+  // Matikan cache agar setiap request merotasi URL baru
   res.setHeader('Cache-Control', 'no-store, max-age=0');
 
-  const mainUrl = process.env.GAS_URLS;
+  const envUrls = process.env.GAS_URLS || "";
+  const webAppURLs = envUrls.split(",").map(url => url.trim()).filter(Boolean);
 
-  if (!mainUrl) {
-    return res.status(500).send("Variabel GAS_URLS belum diisi di Settings Vercel.");
+  if (webAppURLs.length === 0) {
+    return res.status(500).send("GAS_URLS belum diisi dengan benar di Settings Vercel.");
   }
 
-  try {
-    // Vercel Server memanggil Apps Script di balik layar
-    const response = await fetch(mainUrl, {
-      method: 'GET',
-      redirect: 'follow'
-    });
+  // Rotasi acak di server Vercel (Super Kilat & Tanpa Error Response)
+  const randomIndex = Math.floor(Math.random() * webAppURLs.length);
+  const targetURL = webAppURLs[randomIndex];
 
-    if (!response.ok) {
-      throw new Error(`HTTP Error Status: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    if (data && data.url) {
-      // 302 REDIRECT LANGSUNG DARI SERVER (Penghilang Layar Peringatan Google)
-      return res.redirect(302, data.url);
-    } else {
-      return res.status(500).send("Format JSON dari Apps Script tidak sesuai.");
-    }
-  } catch (error) {
-    console.error("Gagal mengalihkan via Vercel:", error);
-    return res.status(500).send("Gagal mengarahkan ke halaman sertifikat.");
-  }
+  // Direct 302 Redirect resmi dari Server Vercel
+  return res.redirect(302, targetURL);
 }
