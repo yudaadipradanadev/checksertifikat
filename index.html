@@ -36,23 +36,24 @@
   <div id="loader" class="spinner"></div>
 
   <script>
+    // Memanggil API internal Vercel
     fetch('/api/redirect')
       .then(res => {
-        if (!res.ok) throw new Error("HTTP Status Error: " + res.status);
+        if (!res.ok) throw new Error("Gagal mengambil data");
         return res.json();
       })
       .then(data => {
         if (data && data.url) {
-          // Langsung alihkan seluruh halaman browser
+          // Langsung alihkan pengguna ke salah satu dari 3 URL target
           window.location.replace(data.url);
         } else {
-          throw new Error("URL target tidak ditemukan");
+          throw new Error("URL tidak valid");
         }
       })
       .catch(err => {
-        console.error("Detail Error:", err);
+        console.error("Error:", err);
         document.getElementById('loader').style.display = 'none';
-        document.body.innerHTML = '<p style="color: red; font-weight: bold;">Gagal memuat sertifikat. Silakan muat ulang halaman.</p>';
+        document.body.innerHTML = '<p style="color: red; font-weight: bold;">Gagal memuat sertifikat. Silakan refresh halaman.</p>';
       });
   </script>
 
