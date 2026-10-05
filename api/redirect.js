@@ -2,12 +2,24 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Cache-Control', 'no-store, max-age=0');
 
-  // Membaca variabel GAS_URLS dari Vercel
-  const mainUrl = process.env.GAS_URLS;
-
-  if (!mainUrl) {
-    return res.status(500).json({ error: "GAS_URLS belum diisi di Vercel Settings" });
+  const envUrls = process.env.GAS_URLS || "";
+  
+  if (!envUrls) {
+    return res.status(500).json({ error: "GAS_URLS belum diatur di Vercel Settings" });
   }
+
+  // Split jika terdapat beberapa URL dipisahkan koma
+  const urlList = envUrls.split(',').map(u => u.trim()).filter(Boolean);
+
+  // PILIHAN A: Jika Anda memasukkan 3 URL Apps Script target di Vercel
+  // (Paling cepat & tidak perlu hit API Apps Script utama lagi)
+  if (urlList.length > 1) {
+    const randomIndex = Math.floor(Math.random() * urlList.length);
+    return res.status(200).json({ url: urlList[randomIndex] });
+  }
+
+  // PILIHAN B: Jika Anda hanya memasukkan 1 URL utama Apps Script
+  const mainUrl = urlList[0];
 
   try {
     const response = await fetch(mainUrl, {
@@ -16,7 +28,7 @@ export default async function handler(req, res) {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP status error: ${response.status}`);
+      throw new Error(`Google Apps Script mengembalikan HTTP Status ${response.status}`);
     }
 
     const data = await response.json();
@@ -24,7 +36,7 @@ export default async function handler(req, res) {
     if (data && data.url) {
       return res.status(200).json({ url: data.url });
     } else {
-      return res.status(500).json({ error: "Format JSON Apps Script tidak sesuai" });
+      return res.status(500).json({ error: "Format JSON Apps Script tidak memiliki properti 'url'" });
     }
   } catch (error) {
     console.error("Gagal memanggil Apps Script:", error);
