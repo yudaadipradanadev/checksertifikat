@@ -39,13 +39,10 @@
   <iframe id="appFrame" style="display:none;"></iframe>
 
   <script>
-    // URL Router Google Apps Script Utama (Load Balancer)
     const routerUrl = "https://script.google.com/macros/s/AKfycbxRmZ5163dQfhcYsuc1T6qX-HeMZqKMor-bL9FtT3tMyMkdxi9pDbcf2idy2yn7sRdu/exec";
-
     const iframe = document.getElementById('appFrame');
     const loader = document.getElementById('loader');
 
-    // Tampilkan iframe langsung ke URL target
     iframe.src = routerUrl;
     
     iframe.onload = function() {
@@ -53,7 +50,6 @@
       iframe.style.display = 'block';
     };
 
-    // Registrasi Service Worker untuk PWA
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js')
