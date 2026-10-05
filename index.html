@@ -4,8 +4,7 @@
   <base target="_top">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Verifikasi & Cek Sertifikat</title>
-  <link rel="manifest" href="manifest.json">
+  <title>Cek Sertifikat</title>
   <style>
     html, body {
       margin: 0;
@@ -26,8 +25,8 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      color: #555;
+      font-family: sans-serif;
+      color: #666;
     }
   </style>
 </head>
@@ -36,27 +35,22 @@
     <p>Memuat halaman Cek Sertifikat...</p>
   </div>
 
-  <iframe id="appFrame" style="display:none;"></iframe>
+  <iframe id="childFrame" style="display:none;"></iframe>
 
   <script>
-    const routerUrl = "https://script.google.com/macros/s/AKfycbxRmZ5163dQfhcYsuc1T6qX-HeMZqKMor-bL9FtT3tMyMkdxi9pDbcf2idy2yn7sRdu/exec";
-    const iframe = document.getElementById('appFrame');
-    const loader = document.getElementById('loader');
-
-    iframe.src = routerUrl;
-    
-    iframe.onload = function() {
-      loader.style.display = 'none';
-      iframe.style.display = 'block';
-    };
-
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-          .then(reg => console.log('Service Worker Cek Sertifikat terdaftar'))
-          .catch(err => console.error('Gagal mendaftarkan Service Worker', err));
-      });
-    }
+    // Ambil URL target secara Round-Robin dari backend code.gs
+    google.script.run
+      .withSuccessHandler(function(targetUrl) {
+        var iframe = document.getElementById('childFrame');
+        var loader = document.getElementById('loader');
+        
+        iframe.src = targetUrl;
+        iframe.onload = function() {
+          loader.style.display = 'none';
+          iframe.style.display = 'block';
+        };
+      })
+      .routeToWebAppWithUA();
   </script>
 </body>
 </html>
