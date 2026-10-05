@@ -3,10 +3,10 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Cache-Control', 'no-store, max-age=0');
 
-  const mainUrl = process.env.GAS_MAIN_URL;
+  const mainUrl = process.env.GAS_URLS;
 
   if (!mainUrl) {
-    return res.status(500).json({ error: "GAS_MAIN_URL belum diisi di Vercel Settings" });
+    return res.status(500).json({ error: "Terjadi Kesalah Server" });
   }
 
   try {
