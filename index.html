@@ -2,11 +2,90 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cek Sertifikat</title>
-  <script>
-    window.location.replace("/api/redirect");
-  </script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #ffffff;
+      font-family: sans-serif;
+    }
+
+    #loader-container {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #ffffff;
+      z-index: 9999;
+    }
+
+    .spinner {
+      width: 45px;
+      height: 45px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #007bff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      outline: none;
+      display: block;
+    }
+  </style>
 </head>
 <body>
+
+  <div id="loader-container">
+    <div class="spinner"></div>
+  </div>
+
+  <script>
+
+    fetch('/api/redirect')
+      .then(res => {
+        if (!res.ok) throw new Error("Gagal mengambil data dari server");
+        return res.json();
+      })
+      .then(data => {
+        if (data && data.url) {
+
+          const iframe = document.createElement('iframe');
+          iframe.src = data.url;
+          iframe.allow = "geolocation; microphone; camera";
+
+          iframe.onload = function() {
+            const loader = document.getElementById('loader-container');
+            if (loader) loader.style.display = 'none';
+          };
+
+
+          document.body.appendChild(iframe);
+        } else {
+          throw new Error("URL tidak valid");
+        }
+      })
+      .catch(err => {
+        console.error("Error:", err);
+        document.getElementById('loader-container').innerHTML = 
+          '<p style="color: red; font-weight: bold;">Gagal memuat sertifikat. Silakan muat ulang halaman.</p>';
+      });
+  </script>
+
 </body>
 </html>
