@@ -1,25 +1,25 @@
-export default async function handler(req, res) {
-  res.setHeader('Cache-Control', 'no-store, max-age=0');
+const CACHE_NAME = 'cek-sertifikat-v2';
+const urlsToCache = [
+  './',
+  './index.html',
+  './manifest.json'
+];
 
-  const envUrl = process.env.GAS_URLS || "";
-  const gasRouterUrl = envUrl.split(",")[0]?.trim();
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+  );
+});
 
-  if (!gasRouterUrl) {
-    return res.status(500).json({ error: "GAS_URLS belum diisi di Vercel Settings" });
+self.addEventListener('fetch', event => {
+  // Abaikan caching untuk request API redirect
+  if (event.request.url.includes('/api/redirect')) {
+    return fetch(event.request);
   }
 
-  try {
-
-    const response = await fetch(gasRouterUrl);
-    const data = await response.json();
-
-    if (data && data.url) {
-
-      return res.status(200).json({ url: data.url });
-    } else {
-      throw new Error("Respon GAS tidak valid");
-    }
-  } catch (err) {
-    return res.status(500).json({ error: "Gagal memanggil router GAS", details: err.message });
-  }
-}
+  event.respondWith(
+    caches.match(event.request).then(response => {
+      return response || fetch(event.request);
+    })
+  );
+});
