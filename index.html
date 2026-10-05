@@ -16,7 +16,7 @@
       font-family: sans-serif;
     }
 
-    /* CSS Spinner */
+    /* Spinner Loading */
     .spinner {
       width: 50px;
       height: 50px;
@@ -34,7 +34,7 @@
 </head>
 <body>
 
-  <!-- Spinner Loading -->
+  <!-- Tampilan Spinner -->
   <div id="loader-container">
     <div class="spinner"></div>
   </div>
@@ -46,10 +46,10 @@
       .then(response => response.json())
       .then(data => {
         if (data && data.url) {
-          // Langsung alihkan seluruh halaman ke URL target
+          // LANGSUNG ALIHKAN HALAMAN (Tidak pakai iframe agar tidak diblokir Google)
           window.location.href = data.url;
         } else {
-          throw new Error("URL tidak ditemukan pada respons.");
+          throw new Error("URL tidak valid");
         }
       })
       .catch(error => {
